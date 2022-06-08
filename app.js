@@ -8,6 +8,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const ejs = require("ejs");
 const encrypt = require("mongoose-encryption");
+const md5 = require("md5");
 
 
 const app = express();
@@ -26,7 +27,7 @@ const userSchema = new mongoose.Schema({
   password: String
 });
 // to access the SECRET value  in .env file  use process.env.SECRET
-userSchema.plugin(encrypt,{secret:process.env.SECRET , encryptedFields: ['password']});
+//userSchema.plugin(encrypt,{secret:process.env.SECRET , encryptedFields: ['password']});
 
 
 
@@ -45,7 +46,7 @@ app.get("/login" , function(req , res){
 
 app.post("/register" , function(req , res ){
  const username = req.body.username;
- const password =req.body.password;
+ const password =md5(req.body.password);
    const newUser = new User({
      email: username,
      password :password
@@ -66,7 +67,7 @@ app.post("/login" , function(req , res){
        res.send(err);
      }else {
        if(founduser){
-         if(founduser.password === req.body.password){
+         if(founduser.password === md5(req.body.password)){
            res.render("secrets");
          }
        }
