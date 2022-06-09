@@ -1,1 +1,1 @@
-# serets
+# secrets
